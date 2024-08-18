@@ -17,7 +17,7 @@ const { Readable } = require('stream');
 
 class TextToSpeechEngine extends Readable {
   /* eslint-disable class-methods-use-this */
-  _read() {}
+  read() {}
 
   /**
    * Destroys the Text To Speech Engine if a close from the other side occurs

@@ -14,17 +14,16 @@
 * limitations under the License.
 */
 const WebSocketServer = require('ws').Server;
-
-// Change to your own Text to Speech Engine implementation, you can use
-// the WatsonTextToSpeechEngine.js for guidance
-const TextToSpeechEngine = require('./WatsonTextToSpeechEngine');
-
 const url = require('url');
 const Config = require('config');
 
 const DEFAULT_PORT = 8010;
 const LOG_LEVEL = Config.get('LogLevel');
 const logger = require('pino')({ level: LOG_LEVEL, name: 'TextToSpeechAdapter' });
+
+// Change to your own Text to Speech Engine implementation, you can use
+// the WatsonTextToSpeechEngine.js for guidance
+const TextToSpeechEngine = require('./WatsonTextToSpeechEngine');
 
 function handleTextToSpeechConnection(webSocket, incomingMessage) {
   logger.debug('connection received');
@@ -95,7 +94,8 @@ function startServer(options = { port: DEFAULT_PORT }) {
     try {
       wsServer = new WebSocketServer({ port: options.port });
     } catch (e) {
-      return reject(e);
+      reject(e);
+      return; // Salir de la función en caso de error
     }
 
     wsServer.on('error', (error) => {
@@ -108,7 +108,6 @@ function startServer(options = { port: DEFAULT_PORT }) {
     });
 
     wsServer.on('connection', handleTextToSpeechConnection);
-    return wsServer;
   });
 }
 module.exports.start = startServer;
@@ -116,16 +115,16 @@ module.exports.start = startServer;
 function stopServer() {
   return new Promise((resolve, reject) => {
     if (wsServer === null) {
-      return reject(new Error('server not started'));
+      reject(new Error('server not started'));
+      return; // Salir de la función en caso de error
     }
     wsServer.close((err) => {
       if (err) {
-        return reject(err);
+        reject(err);
+      } else {
+        resolve();
       }
-      return resolve();
     });
-    return wsServer;
   });
 }
 module.exports.stop = stopServer;
-

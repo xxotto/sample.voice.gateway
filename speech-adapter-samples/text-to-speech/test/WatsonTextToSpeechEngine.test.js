@@ -13,8 +13,8 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-const WatsonTextToSpeechEngine = require('../lib/WatsonTextToSpeechEngine');
 const { assert } = require('chai');
+const WatsonTextToSpeechEngine = require('../lib/WatsonTextToSpeechEngine');
 
 describe('WatsonTextToSpeechEngine', function () {
   it('should implement the stream interface', function (done) {
